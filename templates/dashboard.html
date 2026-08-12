@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Dashboard · TaskFlow{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div>
+        <p class="eyebrow">Overview</p>
+        <h1>Good to see you, {{ current_user.username }}.</h1>
+        <p class="muted">Here is your productivity snapshot.</p>
+    </div>
+    <a class="btn primary" href="{{ url_for('tasks.tasks') }}">+ Add Task</a>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card"><span>Total Tasks</span><strong>{{ total }}</strong></div>
+    <div class="stat-card"><span>Completed</span><strong>{{ completed }}</strong></div>
+    <div class="stat-card"><span>Pending</span><strong>{{ pending }}</strong></div>
+    <div class="stat-card danger"><span>Overdue</span><strong>{{ overdue }}</strong></div>
+</div>
+
+<div class="dashboard-grid">
+    <section class="panel">
+        <div class="panel-heading"><h2>Completion</h2><strong>{{ completion }}%</strong></div>
+        <div class="progress"><span style="width: {{ completion }}%"></span></div>
+        <p class="muted">Keep going — every completed task counts.</p>
+    </section>
+
+    <section class="panel">
+        <div class="panel-heading"><h2>Priority</h2></div>
+        <div class="priority-row"><span>High</span><b>{{ priority_counts.High }}</b></div>
+        <div class="priority-row"><span>Medium</span><b>{{ priority_counts.Medium }}</b></div>
+        <div class="priority-row"><span>Low</span><b>{{ priority_counts.Low }}</b></div>
+    </section>
+</div>
+
+<section class="panel">
+    <div class="panel-heading">
+        <h2>Recent Tasks</h2>
+        <a href="{{ url_for('tasks.tasks') }}">View all →</a>
+    </div>
+    {% if recent_tasks %}
+    <div class="task-list">
+        {% for task in recent_tasks %}
+        <div class="task-row">
+            <button class="check-btn status-btn" data-id="{{ task.id }}" data-status="{{ 'Pending' if task.status == 'Completed' else 'Completed' }}">
+                {{ '✓' if task.status == 'Completed' else '○' }}
+            </button>
+            <div class="task-main">
+                <strong class="{{ 'completed-text' if task.status == 'Completed' else '' }}">{{ task.title }}</strong>
+                <small>{{ task.category }} · {{ task.priority }}{% if task.due_date %} · Due {{ task.due_date.strftime('%d %b %Y') }}{% endif %}</small>
+            </div>
+            <span class="badge {{ task.status|lower|replace(' ', '-') }}">{{ task.status }}</span>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">No tasks yet. Create your first task.</div>
+    {% endif %}
+</section>
+{% endblock %}

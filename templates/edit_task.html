@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Edit Task · TaskFlow{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div><p class="eyebrow">Task Manager</p><h1>Edit Task</h1></div>
+    <a class="btn secondary" href="{{ url_for('tasks.tasks') }}">← Back</a>
+</div>
+<section class="panel narrow">
+    <form method="post" class="form-stack">
+        <label>Title
+            <input name="title" maxlength="150" value="{{ task.title }}" required>
+        </label>
+        <label>Description
+            <textarea name="description" rows="5">{{ task.description }}</textarea>
+        </label>
+        <div class="form-grid">
+            <label>Priority
+                <select name="priority">
+                    {% for value in ["High", "Medium", "Low"] %}
+                    <option {% if task.priority == value %}selected{% endif %}>{{ value }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+            <label>Category
+                <select name="category">
+                    {% for value in ["College", "Personal", "Work", "Other"] %}
+                    <option {% if task.category == value %}selected{% endif %}>{{ value }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+            <label>Status
+                <select name="status">
+                    {% for value in ["Pending", "In Progress", "Completed"] %}
+                    <option {% if task.status == value %}selected{% endif %}>{{ value }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+            <label>Due date
+                <input type="date" name="due_date" value="{{ task.due_date.isoformat() if task.due_date else '' }}">
+            </label>
+        </div>
+        <div class="button-row">
+            <button class="btn primary" type="submit">Save Changes</button>
+            <a class="btn secondary" href="{{ url_for('tasks.tasks') }}">Cancel</a>
+        </div>
+    </form>
+</section>
+{% endblock %}
